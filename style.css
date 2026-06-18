@@ -40,8 +40,16 @@ body {
 		sans-serif;
 	color: var(--text);
 	background:
-		radial-gradient(circle at 14% 0%, rgba(31, 78, 216, 0.11), transparent 30rem),
-		radial-gradient(circle at 90% 12%, rgba(22, 132, 95, 0.09), transparent 28rem),
+		radial-gradient(
+			circle at 14% 0%,
+			rgba(31, 78, 216, 0.11),
+			transparent 30rem
+		),
+		radial-gradient(
+			circle at 90% 12%,
+			rgba(22, 132, 95, 0.09),
+			transparent 28rem
+		),
 		linear-gradient(180deg, #f7f9fe 0%, var(--bg) 44%, #f6f7fa 100%);
 	line-height: 1.45;
 	-webkit-font-smoothing: antialiased;
@@ -124,10 +132,7 @@ body {
 	min-width: 0;
 }
 .brand-name {
-	font-family:
-		Outfit,
-		Roboto,
-		sans-serif;
+	font-family: Outfit, Roboto, sans-serif;
 	font-size: 20px;
 	font-weight: 900;
 	letter-spacing: 0;
@@ -246,10 +251,7 @@ body {
 	overflow-wrap: anywhere;
 }
 .h1 {
-	font-family:
-		Outfit,
-		Roboto,
-		sans-serif;
+	font-family: Outfit, Roboto, sans-serif;
 	font-size: 3.875rem;
 	line-height: 1.02;
 	margin: 14px 0 12px;
@@ -258,10 +260,7 @@ body {
 	overflow-wrap: anywhere;
 }
 .h2 {
-	font-family:
-		Outfit,
-		Roboto,
-		sans-serif;
+	font-family: Outfit, Roboto, sans-serif;
 	font-size: 2.375rem;
 	line-height: 1.08;
 	margin: 0 0 10px;
@@ -269,10 +268,7 @@ body {
 	text-wrap: balance;
 }
 .h3 {
-	font-family:
-		Outfit,
-		Roboto,
-		sans-serif;
+	font-family: Outfit, Roboto, sans-serif;
 	font-size: 1.35rem;
 	line-height: 1.15;
 	margin: 0 0 10px;
@@ -419,11 +415,7 @@ body {
 	position: relative;
 	overflow: hidden;
 	background:
-		radial-gradient(
-			circle at 20% 20%,
-			rgba(31, 78, 216, 0.1),
-			transparent 30%
-		),
+		radial-gradient(circle at 20% 20%, rgba(31, 78, 216, 0.1), transparent 30%),
 		radial-gradient(
 			circle at 85% 10%,
 			rgba(25, 169, 116, 0.11),
@@ -459,8 +451,16 @@ body {
 	min-height: 300px;
 	overflow: hidden;
 	background:
-		radial-gradient(circle at 18% 16%, rgba(22, 132, 95, 0.13), transparent 5rem),
-		radial-gradient(circle at 84% 18%, rgba(31, 78, 216, 0.13), transparent 5rem),
+		radial-gradient(
+			circle at 18% 16%,
+			rgba(22, 132, 95, 0.13),
+			transparent 5rem
+		),
+		radial-gradient(
+			circle at 84% 18%,
+			rgba(31, 78, 216, 0.13),
+			transparent 5rem
+		),
 		linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
 }
 .doc-card,
@@ -574,10 +574,7 @@ body {
 	border: 1px solid var(--line);
 }
 .stat b {
-	font-family:
-		Outfit,
-		Roboto,
-		sans-serif;
+	font-family: Outfit, Roboto, sans-serif;
 	display: block;
 	font-size: 22px;
 	letter-spacing: 0;
@@ -859,7 +856,11 @@ textarea.field {
 }
 .cta-card {
 	background:
-		radial-gradient(circle at 12% 20%, rgba(31, 78, 216, 0.09), transparent 18rem),
+		radial-gradient(
+			circle at 12% 20%,
+			rgba(31, 78, 216, 0.09),
+			transparent 18rem
+		),
 		linear-gradient(180deg, #fff 0%, #f8fbff 100%);
 }
 .modal-title {
@@ -890,7 +891,11 @@ body.modal-open {
 	border-radius: 24px;
 	border: 1px solid rgba(219, 228, 240, 0.95);
 	background:
-		radial-gradient(circle at top right, rgba(31, 78, 216, 0.09), transparent 30%),
+		radial-gradient(
+			circle at top right,
+			rgba(31, 78, 216, 0.09),
+			transparent 30%
+		),
 		linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 	box-shadow: 0 24px 60px rgba(17, 32, 51, 0.24);
 }
@@ -996,10 +1001,7 @@ body.modal-open {
 	font-weight: 800;
 }
 .price {
-	font-family:
-		Outfit,
-		Roboto,
-		sans-serif;
+	font-family: Outfit, Roboto, sans-serif;
 	font-size: 34px;
 	font-weight: 900;
 	letter-spacing: 0;
@@ -1321,7 +1323,7 @@ body.modal-open {
 		width: 100%;
 	}
 }
-
+/* c. */
 @media (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;
