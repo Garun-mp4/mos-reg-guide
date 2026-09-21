@@ -2447,14 +2447,14 @@ html.js-ready [data-reveal-delay="260"] {
   }
 
   .hero-lead {
-    width: min(354px, 100%);
-    max-width: 354px;
+    width: min(320px, 100%);
+    max-width: 320px;
     font-size: 0.78rem;
   }
 
   .hero-note {
-    width: min(354px, 100%);
-    max-width: 354px;
+    width: min(320px, 100%);
+    max-width: 320px;
   }
 
   .hero-actions {
