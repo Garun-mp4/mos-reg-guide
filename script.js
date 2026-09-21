@@ -1,379 +1,303 @@
-﻿;(function () {
-	document.querySelectorAll('.tabs').forEach(function (tabs) {
-		tabs.querySelectorAll('.tab').forEach(function (btn) {
-			btn.setAttribute(
-				'aria-selected',
-				btn.classList.contains('active') ? 'true' : 'false',
-			)
-			btn.addEventListener('click', function () {
-				var panelWrap = tabs.parentElement
-				tabs.querySelectorAll('.tab').forEach(function (b) {
-					b.classList.remove('active')
-					b.setAttribute('aria-selected', 'false')
-				})
-				btn.classList.add('active')
-				btn.setAttribute('aria-selected', 'true')
-				panelWrap.querySelectorAll('.tab-panel').forEach(function (p) {
-					p.classList.remove('active')
-				})
-				var target = panelWrap.querySelector(
-					'.tab-panel[data-panel="' + btn.getAttribute('data-tab') + '"]',
-				)
-				if (target) target.classList.add('active')
-			})
-		})
-	})
+(() => {
+  "use strict";
 
-	var state = { who: 'for myself', priority: 'speed' }
-	var title = document.getElementById('quizTitle')
-	var text = document.getElementById('quizText')
-	var form = document.getElementById('contactForm')
-	var nameField = form ? form.querySelector('[name="name"]') : null
-	var phoneField = form ? form.querySelector('[name="phone"]') : null
-	var quizSelectionNote = document.getElementById('quizSelectionNote')
-	var quizToFormBtn = document.getElementById('quizToFormBtn')
-	var siteHeader = document.querySelector('.site-header')
-	var menuToggle = document.getElementById('menuToggle')
-	var checklistModal = document.getElementById('checklistModal')
-	var openChecklistModalBtn = document.getElementById('openChecklistModal')
-	var closeChecklistModalTop = document.getElementById('closeChecklistModalTop')
-	var checklistForm = document.getElementById('checklistForm')
-	var contactFormStatus = document.getElementById('contactFormStatus')
-	var checklistFormStatus = document.getElementById('checklistFormStatus')
-	var lastFocusedElement = null
-	var quizLabels = {
-		who: {
-			'for myself': 'для себя',
-			'for family': 'для семьи с детьми',
-			'for employee': 'для сотрудника',
-		},
-		priority: {
-			speed: 'скорость',
-			price: 'цена',
-			support: 'сопровождение',
-		},
-	}
+  const root = document.documentElement;
+  root.classList.add("js-ready");
 
-	function getQuizSummary() {
-		return {
-			who: quizLabels.who[state.who],
-			priority: quizLabels.priority[state.priority],
-		}
-	}
+  const state = {
+    scenario: "self",
+    registrationType: "temporary",
+  };
 
-	function syncQuizWithForm() {
-		if (!form) return
-		var summary = getQuizSummary()
-		var quizWhoField = form.querySelector('[name="quiz_who"]')
-		var quizPriorityField = form.querySelector('[name="quiz_priority"]')
-		var selectionText =
-			'Подбор по квизу: ' +
-			summary.who +
-			', приоритет — ' +
-			summary.priority +
-			'.'
+  const scenarioLabels = {
+    self: "Для себя / аренда",
+    family: "Для семьи",
+    work: "Для работы",
+  };
 
-		if (quizWhoField) quizWhoField.value = summary.who
-		if (quizPriorityField) quizPriorityField.value = summary.priority
-		if (quizSelectionNote) quizSelectionNote.textContent = selectionText
-	}
+  const registrationLabels = {
+    temporary: "Временная регистрация",
+    permanent: "Постоянная регистрация",
+  };
 
-	function setFormStatus(statusEl, type, message) {
-		if (!statusEl) return
-		statusEl.className = 'form-status tiny active ' + type
-		statusEl.textContent = message
-	}
+  const scenarioTabs = [...document.querySelectorAll('[role="tab"][data-scenario]')];
+  const scenarioPanels = [...document.querySelectorAll("[data-scenario-panel]")];
+  const scenarioInput = document.querySelector("#scenarioInput");
+  const registrationTypeInput = document.querySelector("#registrationTypeInput");
+  const leadForm = document.querySelector("#leadForm");
+  const formStatus = document.querySelector("#formStatus");
+  const submitButton = document.querySelector("#submitButton");
 
-	function clearFormStatus(statusEl) {
-		if (!statusEl) return
-		statusEl.className = 'form-status tiny'
-		statusEl.textContent = ''
-	}
+  function setScenario(scenario, { focus = false } = {}) {
+    if (!scenarioLabels[scenario]) return;
 
-	function setSubmitting(formEl, isSubmitting, label) {
-		var submitButton = formEl.querySelector('[type="submit"]')
-		if (!submitButton) return
-		if (!submitButton.dataset.defaultText) {
-			submitButton.dataset.defaultText = submitButton.textContent.trim()
-		}
-		submitButton.disabled = isSubmitting
-		submitButton.textContent = isSubmitting
-			? label
-			: submitButton.dataset.defaultText
-	}
+    state.scenario = scenario;
 
-	function sendTelegramMessage(text) {
-		return fetch('/api/send-telegram', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ text: text }),
-		}).then(function (response) {
-			return response
-				.json()
-				.catch(function () {
-					return {}
-				})
-				.then(function (result) {
-					if (!response.ok || result.ok === false) {
-						throw new Error(
-							result.message ||
-								'Telegram не принял сообщение. Проверьте настройки бота.',
-						)
-					}
-					return result
-				})
-		})
-	}
+    scenarioTabs.forEach((tab) => {
+      const isSelected = tab.dataset.scenario === scenario;
+      tab.classList.toggle("is-active", isSelected);
+      tab.setAttribute("aria-selected", String(isSelected));
+      tab.tabIndex = isSelected ? 0 : -1;
+      if (isSelected && focus) tab.focus();
+    });
 
-	function updateQuiz() {
-		var map = {
-			'for myself': {
-				speed: [
-					'Подойдёт быстрый подбор и консультация',
-					'Если вам нужна регистрация для себя, мы уточним сроки, документы и предложим понятный вариант без лишней бюрократии.',
-				],
-				price: [
-					'Подойдёт бюджетный и прозрачный сценарий',
-					'Для личного запроса покажем, как получить понятный расчёт и не переплачивать за лишние услуги.',
-				],
-				support: [
-					'Подойдёт сопровождение на каждом шаге',
-					'Мы поможем понять процесс, собрать документы и не потеряться в деталях.',
-				],
-			},
-			'for family': {
-				speed: [
-					'Подойдёт семейный сценарий с быстрым стартом',
-					'Если регистрация нужна для детей, школы, сада или поликлиники, важны сроки и точный список документов.',
-				],
-				price: [
-					'Подойдёт оптимальный вариант для семьи',
-					'Подберём решение с учётом бюджета и задач всей семьи.',
-				],
-				support: [
-					'Подойдёт сопровождение для родителей',
-					'Объясним всё простым языком и поможем пройти процесс без лишних звонков и очередей.',
-				],
-			},
-			'for employee': {
-				speed: [
-					'Подойдёт срочное оформление для сотрудника',
-					'Если вопрос связан с работой, сделаем акцент на быстром контакте и чётком следующем шаге.',
-				],
-				price: [
-					'Подойдёт понятный расчёт для HR/работодателя',
-					'Покажем прозрачные условия и поможем быстро закрыть задачу.',
-				],
-				support: [
-					'Подойдёт полное сопровождение по заявке',
-					'Возьмём на себя коммуникацию и подскажем, какие данные нужны для старта.',
-				],
-			},
-		}
-		var result = map[state.who][state.priority]
-		title.textContent = result[0]
-		text.textContent = result[1]
-		syncQuizWithForm()
-	}
-	document.querySelectorAll('[data-group]').forEach(function (groupEl) {
-		var group = groupEl.getAttribute('data-group')
-		groupEl.querySelectorAll('.option').forEach(function (opt) {
-			opt.setAttribute(
-				'aria-pressed',
-				opt.classList.contains('active') ? 'true' : 'false',
-			)
-			opt.addEventListener('click', function () {
-				groupEl.querySelectorAll('.option').forEach(function (o) {
-					o.classList.remove('active')
-					o.setAttribute('aria-pressed', 'false')
-				})
-				opt.classList.add('active')
-				opt.setAttribute('aria-pressed', 'true')
-				state[group] = opt.getAttribute('data-value')
-				updateQuiz()
-			})
-		})
-	})
-	updateQuiz()
+    scenarioPanels.forEach((panel) => {
+      const isActive = panel.dataset.scenarioPanel === scenario;
+      panel.hidden = !isActive;
+      panel.classList.toggle("is-active", isActive);
+    });
 
-	function openModal(modal, focusTarget) {
-		if (!modal) return
-		lastFocusedElement = document.activeElement
-		modal.classList.add('active')
-		modal.setAttribute('aria-hidden', 'false')
-		document.body.classList.add('modal-open')
-		if (focusTarget) focusTarget.focus()
-	}
+    if (scenarioInput) scenarioInput.value = scenarioLabels[scenario];
+  }
 
-	function closeModal(modal) {
-		if (!modal) return
-		modal.classList.remove('active')
-		modal.setAttribute('aria-hidden', 'true')
-		if (
-			!document.querySelector('.modal-backdrop.active') &&
-			document.body.classList.contains('modal-open')
-		) {
-			document.body.classList.remove('modal-open')
-		}
-		if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
-			lastFocusedElement.focus()
-		}
-	}
+  scenarioTabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => setScenario(tab.dataset.scenario));
 
-	function setMenuState(isOpen) {
-		if (!siteHeader || !menuToggle) return
-		siteHeader.classList.toggle('nav-open', isOpen)
-		menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false')
-		menuToggle.setAttribute(
-			'aria-label',
-			isOpen ? 'Закрыть меню' : 'Открыть меню',
-		)
-	}
+    tab.addEventListener("keydown", (event) => {
+      const lastIndex = scenarioTabs.length - 1;
+      let nextIndex = index;
 
-	if (menuToggle && siteHeader) {
-		menuToggle.addEventListener('click', function () {
-			setMenuState(!siteHeader.classList.contains('nav-open'))
-		})
-	}
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+        nextIndex = index === lastIndex ? 0 : index + 1;
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+        nextIndex = index === 0 ? lastIndex : index - 1;
+      } else if (event.key === "Home") {
+        nextIndex = 0;
+      } else if (event.key === "End") {
+        nextIndex = lastIndex;
+      } else {
+        return;
+      }
 
-	document
-		.querySelectorAll('.nav-link, .header-actions a, .brand')
-		.forEach(function (link) {
-			link.addEventListener('click', function () {
-				if (window.innerWidth <= 980) {
-					setMenuState(false)
-				}
-			})
-		})
+      event.preventDefault();
+      setScenario(scenarioTabs[nextIndex].dataset.scenario, { focus: true });
+    });
+  });
 
-	if (openChecklistModalBtn && checklistModal && checklistForm) {
-		openChecklistModalBtn.addEventListener('click', function () {
-			openModal(checklistModal, checklistForm.querySelector('[name="name"]'))
-		})
-	}
+  function setRegistrationType(type) {
+    if (!registrationLabels[type]) return;
 
-	if (closeChecklistModalTop && checklistModal) {
-		closeChecklistModalTop.addEventListener('click', function () {
-			closeModal(checklistModal)
-		})
-	}
+    state.registrationType = type;
+    if (registrationTypeInput) registrationTypeInput.value = registrationLabels[type];
 
-	if (checklistModal) {
-		checklistModal.addEventListener('click', function (e) {
-			if (e.target === checklistModal) {
-				closeModal(checklistModal)
-			}
-		})
-	}
+    document.querySelectorAll("[data-reg-type]").forEach((control) => {
+      const isSelected = control.dataset.regType === type;
+      control.closest(".type-card")?.classList.toggle("is-selected", isSelected);
+      control.setAttribute("aria-pressed", String(isSelected));
+    });
+  }
 
-	document.addEventListener('keydown', function (e) {
-		if (e.key !== 'Escape') return
-		if (checklistModal && checklistModal.classList.contains('active')) {
-			closeModal(checklistModal)
-		}
-	})
+  document.querySelectorAll("[data-reg-type]").forEach((control) => {
+    control.addEventListener("click", () => {
+      setRegistrationType(control.dataset.regType);
+      document.querySelector("#lead-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.setTimeout(() => document.querySelector("#contact")?.focus(), 500);
+    });
+  });
 
-	if (quizToFormBtn) {
-		quizToFormBtn.addEventListener('click', function () {
-			syncQuizWithForm()
-			setTimeout(function () {
-				if (nameField && !nameField.value.trim()) {
-					nameField.focus()
-					return
-				}
-				if (phoneField && !phoneField.value.trim()) {
-					phoneField.focus()
-				}
-			}, 350)
-		})
-	}
+  function setForeignIntent() {
+    if (scenarioInput) scenarioInput.value = "Иностранный гражданин / отдельный маршрут";
+  }
 
-	if (form) form.addEventListener('submit', function (e) {
-		e.preventDefault()
-		clearFormStatus(contactFormStatus)
-		setSubmitting(form, true, 'Отправляем...')
-		var data = new FormData(form)
-		var name = (data.get('name') || '').toString().trim()
-		var phone = (data.get('phone') || '').toString().trim()
-		var message = (data.get('message') || '').toString().trim()
-		var quizWho = (data.get('quiz_who') || '').toString().trim()
-		var quizPriority = (data.get('quiz_priority') || '').toString().trim()
-		var textMsg = [
-			'Здравствуйте! Нужна консультация по регистрации.',
-			name ? 'Имя: ' + name : '',
-			phone ? 'Контакт: ' + phone : '',
-			quizWho ? 'Для кого нужна регистрация: ' + quizWho : '',
-			quizPriority ? 'Что важнее всего: ' + quizPriority : '',
-			message ? 'Запрос: ' + message : '',
-			'Страница: ' + window.location.href,
-		]
-			.filter(Boolean)
-			.join('\n')
-		sendTelegramMessage(textMsg)
-			.then(function () {
-				setFormStatus(
-					contactFormStatus,
-					'success',
-					'Заявка отправлена. Мы свяжемся с вами по указанному контакту.',
-				)
-				form.reset()
-				syncQuizWithForm()
-			})
-			.catch(function (error) {
-				setFormStatus(
-					contactFormStatus,
-					'error',
-					error.message || 'Не удалось отправить заявку. Попробуйте позже.',
-				)
-			})
-			.finally(function () {
-				setSubmitting(form, false)
-			})
-	})
+  document.querySelectorAll("[data-form-intent]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const intent = link.dataset.formIntent;
+      if (scenarioLabels[intent]) {
+        setScenario(intent);
+      } else if (intent === "foreign") {
+        setForeignIntent();
+      }
+    });
+  });
 
-	if (checklistForm) {
-		checklistForm.addEventListener('submit', function (e) {
-			e.preventDefault()
-			clearFormStatus(checklistFormStatus)
-			setSubmitting(checklistForm, true, 'Отправляем...')
-			var data = new FormData(checklistForm)
-			var checklistName = (data.get('name') || '').toString().trim()
-			var checklistContact = (data.get('contact') || '').toString().trim()
-			var checklistComment = (data.get('comment') || '').toString().trim()
-			var checklistText = [
-				'Здравствуйте! Хочу получить чек-лист по регистрации в Москве и МО.',
-				checklistName ? 'Имя: ' + checklistName : '',
-				checklistContact ? 'Контакт: ' + checklistContact : '',
-				checklistComment ? 'Комментарий: ' + checklistComment : '',
-				'Страница: ' + window.location.href,
-			]
-				.filter(Boolean)
-				.join('\n')
-			sendTelegramMessage(checklistText)
-				.then(function () {
-					setFormStatus(
-						checklistFormStatus,
-						'success',
-						'Заявка отправлена. Мы пришлём чек-лист по указанному контакту.',
-					)
-					setTimeout(function () {
-						checklistForm.reset()
-						clearFormStatus(checklistFormStatus)
-						closeModal(checklistModal)
-					}, 700)
-				})
-				.catch(function (error) {
-					setFormStatus(
-						checklistFormStatus,
-						'error',
-						error.message || 'Не удалось отправить заявку. Попробуйте позже.',
-					)
-				})
-				.finally(function () {
-					setSubmitting(checklistForm, false)
-				})
-		})
-	}
-})()
+  const workflowSteps = [...document.querySelectorAll("[data-workflow-step]")];
+  const workflowStages = [...document.querySelectorAll("[data-workflow-stage]")];
+  const workflowProgress = [...document.querySelectorAll(".workflow-progress span")];
+  const workflowLabel = document.querySelector("[data-workflow-label]");
+  const workflowStatus = document.querySelector("[data-workflow-status]");
+  const workflowData = {
+    1: { label: "Собираем задачу", status: "в работе" },
+    2: { label: "Проверяем документы", status: "нужны данные" },
+    3: { label: "Подбираем маршрут", status: "сверяем" },
+    4: { label: "Сопровождаем оформление", status: "на связи" },
+  };
+
+  function setWorkflowStep(step) {
+    const numericStep = Number(step);
+    const current = workflowData[numericStep] ? numericStep : 1;
+
+    workflowSteps.forEach((control) => {
+      const isActive = Number(control.dataset.workflowStep) === current;
+      control.classList.toggle("is-active", isActive);
+      if (isActive) control.setAttribute("aria-current", "step");
+      else control.removeAttribute("aria-current");
+    });
+
+    workflowStages.forEach((stage) => {
+      stage.hidden = Number(stage.dataset.workflowStage) !== current;
+    });
+
+    workflowProgress.forEach((progress, index) => {
+      progress.classList.toggle("is-active", index < current);
+    });
+
+    if (workflowLabel) workflowLabel.textContent = workflowData[current].label;
+    if (workflowStatus) workflowStatus.textContent = workflowData[current].status;
+  }
+
+  workflowSteps.forEach((step) => {
+    step.addEventListener("click", () => setWorkflowStep(step.dataset.workflowStep));
+  });
+
+  const menuToggle = document.querySelector(".menu-toggle");
+  const siteHeader = document.querySelector(".site-header");
+  const primaryNavigation = document.querySelector("#primary-navigation");
+
+  function closeMenu() {
+    if (!menuToggle || !siteHeader) return;
+    siteHeader.classList.remove("nav-open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.setAttribute("aria-label", "Открыть меню");
+  }
+
+  menuToggle?.addEventListener("click", () => {
+    const isOpen = siteHeader?.classList.toggle("nav-open");
+    menuToggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
+    menuToggle.setAttribute("aria-label", isOpen ? "Закрыть меню" : "Открыть меню");
+    if (isOpen) primaryNavigation?.querySelector("a")?.focus();
+  });
+
+  primaryNavigation?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
+
+  const revealItems = [...document.querySelectorAll("[data-reveal]")];
+  document.querySelector(".hero-visual[data-reveal]")?.classList.add("is-visible");
+  if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+    );
+
+    revealItems.forEach((item) => revealObserver.observe(item));
+  } else {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
+  }
+
+  function setFormStatus(message, type = "success") {
+    if (!formStatus) return;
+    formStatus.hidden = false;
+    formStatus.textContent = message;
+    formStatus.classList.toggle("is-error", type === "error");
+  }
+
+  function markInvalid(field, invalid) {
+    if (!field) return;
+    field.setAttribute("aria-invalid", String(invalid));
+  }
+
+  function validateForm() {
+    if (!leadForm) return false;
+
+    const contact = leadForm.querySelector("#contact");
+    const consent = leadForm.querySelector("#consent");
+    const hasContact = Boolean(contact?.value.trim());
+    const hasConsent = Boolean(consent?.checked);
+
+    markInvalid(contact, !hasContact);
+    if (contact && !hasContact) contact.focus();
+
+    if (!hasConsent && contact && hasContact) consent?.focus();
+    if (consent) consent.setAttribute("aria-invalid", String(!hasConsent));
+
+    if (!hasContact || !hasConsent) {
+      setFormStatus("Укажите контакт и подтвердите согласие — тогда мы сможем ответить.", "error");
+      return false;
+    }
+
+    return true;
+  }
+
+  function clean(value, limit = 1000) {
+    return String(value || "").trim().slice(0, limit);
+  }
+
+  function buildMessage() {
+    const formData = new FormData(leadForm);
+    const name = clean(formData.get("name"), 160) || "не указано";
+    const contact = clean(formData.get("contact"), 240);
+    const request = clean(formData.get("request"), 1200) || "не указано";
+    const scenario = clean(formData.get("scenario"), 120);
+    const registrationType = clean(formData.get("registration_type"), 120);
+
+    return [
+      "Новая заявка — МосРегГид",
+      `Сценарий: ${scenario}`,
+      `Тип регистрации: ${registrationType}`,
+      `Имя: ${name}`,
+      `Контакт: ${contact}`,
+      `Задача: ${request}`,
+    ].join("\n");
+  }
+
+  leadForm?.querySelectorAll("input, textarea").forEach((field) => {
+    field.addEventListener("input", () => {
+      if (field.matches("#contact") && field.value.trim()) markInvalid(field, false);
+      if (field.matches("#consent") && field.checked) markInvalid(field, false);
+      if (formStatus && !formStatus.hidden) formStatus.hidden = true;
+    });
+  });
+
+  leadForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const honeypot = leadForm.querySelector("#website")?.value.trim();
+    if (honeypot) return;
+    if (!validateForm() || !submitButton) return;
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Отправляем…";
+    leadForm.setAttribute("aria-busy", "true");
+    if (formStatus) formStatus.hidden = true;
+
+    try {
+      const response = await fetch("/api/send-telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: buildMessage(), website: "" }),
+      });
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "Не удалось отправить обращение");
+
+      setFormStatus("Сообщение отправлено. Вернёмся с ответом после проверки обращения.");
+      leadForm.reset();
+      setScenario(state.scenario);
+      setRegistrationType(state.registrationType);
+      formStatus?.focus();
+    } catch (error) {
+      setFormStatus("Не удалось отправить форму. Напишите напрямую в Telegram или WhatsApp — ссылки есть рядом.", "error");
+      console.error("Lead form submission failed", error instanceof Error ? error.message : error);
+    } finally {
+      submitButton.disabled = false;
+      submitButton.innerHTML = 'Отправить обращение <span>↗</span>';
+      leadForm.removeAttribute("aria-busy");
+    }
+  });
+
+  const currentYear = document.querySelector("#currentYear");
+  if (currentYear) currentYear.textContent = String(new Date().getFullYear());
+
+  if (formStatus) formStatus.tabIndex = -1;
+  setScenario(state.scenario);
+  setRegistrationType(state.registrationType);
+  setWorkflowStep(1);
+})();
