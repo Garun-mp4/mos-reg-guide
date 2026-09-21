@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#14151a" />
+    <meta name="theme-color" content="#ffffff" />
     <meta
       name="description"
       content="МосРегГид помогает разобраться с временной или постоянной регистрацией в Москве и МО: проверяем ситуацию, документы и следующий законный шаг."
@@ -14,12 +14,13 @@
       property="og:description"
       content="Сопровождение оформления регистрации в Москве и Московской области через понятный маршрут."
     />
-    <meta property="og:image" content="assets/media/mos-reg-guide-hero.webp" />
+    <meta property="og:image" content="assets/media/mos-reg-guide-hero-v2.webp" />
     <title>МосРегГид — сопровождение регистрации в Москве и МО</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">К содержанию</a>
     <div class="page-shell">
       <header class="site-header" id="top">
         <a class="brand" href="#top" aria-label="МосРегГид — на главную">
@@ -55,7 +56,7 @@
         </nav>
       </header>
 
-      <main>
+      <main id="main-content">
         <section class="hero section" aria-labelledby="hero-title">
           <div class="hero-copy" data-reveal>
             <p class="eyebrow"><span class="eyebrow-dot"></span>Москва и МО · сопровождение по закону</p>
@@ -91,10 +92,15 @@
                 <span class="window-signal"></span>
               </div>
               <picture>
-                <source srcset="assets/media/mos-reg-guide-hero.webp" type="image/webp" />
+                <source
+                  media="(max-width: 560px)"
+                  srcset="assets/media/mos-reg-guide-hero-mobile.webp"
+                  type="image/webp"
+                />
+                <source srcset="assets/media/mos-reg-guide-hero-v2.webp" type="image/webp" />
                 <img
-                  src="assets/media/mos-reg-guide-hero.png"
-                  alt="Демонстрация интерфейса с чек-листом документов, статусом заявки и картой Москвы"
+                  src="assets/media/mos-reg-guide-hero-v2.png"
+                  alt="Пример маршрута регистрации: проверка ситуации, документы, текущий этап и следующий шаг"
                   width="1672"
                   height="941"
                   fetchpriority="high"
