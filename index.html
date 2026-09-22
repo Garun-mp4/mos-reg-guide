@@ -82,7 +82,7 @@
             </p>
           </div>
 
-          <div class="hero-route" data-reveal data-reveal-delay="120" aria-label="Понятный маршрут обращения">
+          <div class="hero-route" role="group" data-reveal data-reveal-delay="120" aria-label="Понятный маршрут обращения">
             <div class="hero-route__head">
               <span class="hero-route__label">МОСРЕГГИД / МАРШРУТ ОБРАЩЕНИЯ</span>
               <span class="hero-route__status"><i aria-hidden="true"></i> начинаем с ситуации</span>
@@ -202,10 +202,10 @@
                     <li>основание проживания и участие собственника</li>
                     <li>что подготовить для первого обращения</li>
                   </ul>
-                  <a class="text-link" href="#lead-form" data-form-intent="self">Обсудить мою ситуацию <span>↗</span></a>
+                  <a class="text-link" href="#lead-form" data-form-intent="self">Обсудить мою ситуацию <span aria-hidden="true">↗</span></a>
                 </div>
-                <div class="scenario-ui scenario-ui--self" aria-label="Пример маршрута для личной ситуации">
-                  <div class="scenario-ui__header"><span class="ui-dot ui-dot--blue"></span><span>Ваш маршрут</span><span class="ui-kebab">•••</span></div>
+                <div class="scenario-ui scenario-ui--self" role="group" aria-label="Пример маршрута для личной ситуации">
+                  <div class="scenario-ui__header"><span class="ui-dot ui-dot--blue" aria-hidden="true"></span><span>Ваш маршрут</span><span class="ui-kebab" aria-hidden="true">•••</span></div>
                   <div class="route-line"><span class="route-line__node is-done">✓</span><span><b>Ситуация</b><small>собрана в чате</small></span></div>
                   <div class="route-line"><span class="route-line__node is-current">2</span><span><b>Документы</b><small>проверяем основание</small></span><em>сейчас</em></div>
                   <div class="route-line"><span class="route-line__node">3</span><span><b>Следующий шаг</b><small>будет после проверки</small></span></div>
@@ -234,10 +234,10 @@
                     <li>отдельно проверяем документы детей</li>
                     <li>не обещаем автоматическое решение вопроса со школой или садом</li>
                   </ul>
-                  <a class="text-link" href="#lead-form" data-form-intent="family">Обсудить семейную ситуацию <span>↗</span></a>
+                  <a class="text-link" href="#lead-form" data-form-intent="family">Обсудить семейную ситуацию <span aria-hidden="true">↗</span></a>
                 </div>
-                <div class="scenario-ui scenario-ui--family" aria-label="Пример семейного маршрута">
-                  <div class="scenario-ui__header"><span class="ui-dot ui-dot--pink"></span><span>Состав обращения</span><span class="ui-kebab">•••</span></div>
+                <div class="scenario-ui scenario-ui--family" role="group" aria-label="Пример семейного маршрута">
+                  <div class="scenario-ui__header"><span class="ui-dot ui-dot--pink" aria-hidden="true"></span><span>Состав обращения</span><span class="ui-kebab" aria-hidden="true">•••</span></div>
                   <div class="people-stack"><span>Вы</span><span>Ребёнок</span><span>Собственник</span></div>
                   <div class="family-progress"><div><span></span><span></span><span></span></div><b>3 участника · уточняем документы</b></div>
                   <div class="scenario-note"><span class="note-icon">!</span><span><b>Важно проверить</b><small>основание для каждого участника</small></span></div>
@@ -266,13 +266,13 @@
                     <li>чек-лист для сотрудника и ответственного</li>
                     <li>понятный статус без лишних обещаний</li>
                   </ul>
-                  <a class="text-link" href="#lead-form" data-form-intent="work">Обсудить задачу для работы <span>↗</span></a>
+                  <a class="text-link" href="#lead-form" data-form-intent="work">Обсудить задачу для работы <span aria-hidden="true">↗</span></a>
                 </div>
-                <div class="scenario-ui scenario-ui--work" aria-label="Пример рабочего маршрута">
-                  <div class="scenario-ui__header"><span class="ui-dot ui-dot--violet"></span><span>Командная заявка</span><span class="ui-kebab">•••</span></div>
+                <div class="scenario-ui scenario-ui--work" role="group" aria-label="Пример рабочего маршрута">
+                  <div class="scenario-ui__header"><span class="ui-dot ui-dot--violet" aria-hidden="true"></span><span>Командная заявка</span><span class="ui-kebab" aria-hidden="true">•••</span></div>
                   <div class="work-row"><span class="avatar">HR</span><span><b>Задача сотрудника</b><small>ответственный назначен</small></span><span class="mini-badge">в работе</span></div>
-                  <div class="work-row"><span class="avatar avatar--blue">01</span><span><b>Документы</b><small>собираем исходные данные</small></span><span class="mini-check">↗</span></div>
-                  <div class="work-row"><span class="avatar avatar--pink">02</span><span><b>Маршрут</b><small>определим после проверки</small></span><span class="mini-check">—</span></div>
+                  <div class="work-row"><span class="avatar avatar--blue">01</span><span><b>Документы</b><small>собираем исходные данные</small></span><span class="mini-check" aria-hidden="true">↗</span></div>
+                  <div class="work-row"><span class="avatar avatar--pink">02</span><span><b>Маршрут</b><small>определим после проверки</small></span><span class="mini-check" aria-hidden="true">—</span></div>
                   <div class="scenario-ui__footer"><span class="pulse pulse--violet"></span>Понятные статусы для команды</div>
                 </div>
               </div>
@@ -296,7 +296,7 @@
                 <li>основание и согласие собственника</li>
                 <li>документы всех участников</li>
               </ul>
-              <button class="card-link" type="button" data-reg-type="temporary">Выбрать для разговора <span>↗</span></button>
+              <button class="card-link" type="button" data-reg-type="temporary">Выбрать для разговора <span aria-hidden="true">↗</span></button>
             </article>
             <article class="type-card type-card--violet" data-reveal data-reveal-delay="120">
               <div class="type-card__top"><span class="type-number">02</span><span class="type-tag">место жительства</span></div>
@@ -307,7 +307,7 @@
                 <li>данные собственника и заявителя</li>
                 <li>цель и ограничения конкретной ситуации</li>
               </ul>
-              <button class="card-link" type="button" data-reg-type="permanent">Выбрать для разговора <span>↗</span></button>
+              <button class="card-link" type="button" data-reg-type="permanent">Выбрать для разговора <span aria-hidden="true">↗</span></button>
             </article>
           </div>
           <div class="caution-note content-width" data-reveal>
@@ -325,47 +325,47 @@
               <ol class="workflow-steps">
                 <li>
                   <button class="workflow-step is-active" type="button" data-workflow-step="1" aria-controls="workflow-console" aria-current="step">
-                    <span>01</span><span><b>Опишите задачу</b><small>адрес, срок и цель обращения</small></span><i>↗</i>
+                    <span>01</span><span><b>Опишите задачу</b><small>адрес, срок и цель обращения</small></span><i aria-hidden="true">↗</i>
                   </button>
                 </li>
                 <li>
                   <button class="workflow-step" type="button" data-workflow-step="2" aria-controls="workflow-console">
-                    <span>02</span><span><b>Проверяем документы</b><small>ищем пробелы и важные условия</small></span><i>↗</i>
+                    <span>02</span><span><b>Проверяем документы</b><small>ищем пробелы и важные условия</small></span><i aria-hidden="true">↗</i>
                   </button>
                 </li>
                 <li>
                   <button class="workflow-step" type="button" data-workflow-step="3" aria-controls="workflow-console">
-                    <span>03</span><span><b>Подбираем маршрут</b><small>объясняем допустимые варианты</small></span><i>↗</i>
+                    <span>03</span><span><b>Подбираем маршрут</b><small>объясняем допустимые варианты</small></span><i aria-hidden="true">↗</i>
                   </button>
                 </li>
                 <li>
                   <button class="workflow-step" type="button" data-workflow-step="4" aria-controls="workflow-console">
-                    <span>04</span><span><b>Сопровождаем оформление</b><small>остаёмся на связи по процессу</small></span><i>↗</i>
+                    <span>04</span><span><b>Сопровождаем оформление</b><small>остаёмся на связи по процессу</small></span><i aria-hidden="true">↗</i>
                   </button>
                 </li>
               </ol>
             </div>
 
-            <div class="workflow-visual" id="workflow-console" data-reveal data-reveal-delay="160" aria-live="polite">
+            <div class="workflow-visual" id="workflow-console" role="region" aria-label="Текущий этап маршрута" data-reveal data-reveal-delay="160" aria-live="polite">
               <div class="workflow-window">
                 <div class="workflow-window__bar"><span class="window-dots"><i></i><i></i><i></i></span><span>case / MR-082</span><span class="window-signal"></span></div>
                 <div class="workflow-window__body">
                   <div class="workflow-window__heading"><span><small>ТЕКУЩИЙ ЭТАП</small><b data-workflow-label>Собираем задачу</b></span><span class="status-chip"><i></i><span data-workflow-status>в работе</span></span></div>
                   <div class="workflow-progress" aria-hidden="true"><span class="is-active"></span><span></span><span></span><span></span></div>
                   <div class="workflow-stage" data-workflow-stage="1">
-                    <span class="stage-icon stage-icon--blue">?</span><b>Что нужно решить?</b><p>Ответьте на несколько вопросов в мессенджере — это помогает начать с правильного основания.</p>
-                    <div class="stage-input"><span>Временная регистрация для аренды...</span><i>↗</i></div>
+                    <span class="stage-icon stage-icon--blue" aria-hidden="true">?</span><b>Что нужно решить?</b><p>Ответьте на несколько вопросов в мессенджере — это помогает начать с правильного основания.</p>
+                    <div class="stage-input"><span>Временная регистрация для аренды…</span><i aria-hidden="true">↗</i></div>
                   </div>
                   <div class="workflow-stage" data-workflow-stage="2" hidden>
-                    <span class="stage-icon stage-icon--pink">✓</span><b>Документы в фокусе</b><p>Покажем, каких данных не хватает и что важно уточнить до оформления.</p>
-                    <div class="stage-list"><span>Документ заявителя <i>✓</i></span><span>Основание проживания <i>?</i></span><span>Данные собственника <i>—</i></span></div>
+                    <span class="stage-icon stage-icon--pink" aria-hidden="true">✓</span><b>Документы в фокусе</b><p>Покажем, каких данных не хватает и что важно уточнить до оформления.</p>
+                    <div class="stage-list"><span>Документ заявителя <i aria-hidden="true">✓</i></span><span>Основание проживания <i aria-hidden="true">?</i></span><span>Данные собственника <i aria-hidden="true">—</i></span></div>
                   </div>
                   <div class="workflow-stage" data-workflow-stage="3" hidden>
-                    <span class="stage-icon stage-icon--violet">↗</span><b>Маршрут собран</b><p>Сверим задачу с доступными вариантами и обозначим следующий шаг без лишних обещаний.</p>
+                    <span class="stage-icon stage-icon--violet" aria-hidden="true">↗</span><b>Маршрут собран</b><p>Сверим задачу с доступными вариантами и обозначим следующий шаг без лишних обещаний.</p>
                     <div class="stage-route"><span>Временная</span><span>Постоянная</span><span>Уточнить</span></div>
                   </div>
                   <div class="workflow-stage" data-workflow-stage="4" hidden>
-                    <span class="stage-icon stage-icon--blue">→</span><b>Остаёмся на связи</b><p>После согласования маршрута можно задать вопрос в чате и видеть, на каком этапе находится обращение.</p>
+                    <span class="stage-icon stage-icon--blue" aria-hidden="true">→</span><b>Остаёмся на связи</b><p>После согласования маршрута можно задать вопрос в чате и видеть, на каком этапе находится обращение.</p>
                     <div class="stage-message"><span class="stage-message__avatar">МР</span><span><b>МосРегГид</b><small>Готовы уточнить следующий шаг</small></span></div>
                   </div>
                 </div>
@@ -383,7 +383,7 @@
           <div class="system-grid content-width">
             <article class="feature-card feature-card--large" data-reveal>
               <div class="feature-card__copy"><span class="feature-index">01 / документы</span><h3>Чек-лист, который меняется под задачу</h3><p>Список не является универсальным шаблоном: он уточняется после разговора о вашем адресе, основании и составе семьи.</p></div>
-              <div class="feature-visual feature-visual--checklist" aria-label="Визуализация чек-листа документов">
+              <div class="feature-visual feature-visual--checklist" role="group" aria-label="Визуализация чек-листа документов">
                 <div class="feature-visual__head"><span>ПОДГОТОВКА</span><strong>3 / 6</strong></div>
                 <div class="feature-check"><i class="is-checked">✓</i><span><b>Документ заявителя</b><small>проверено</small></span><em>готово</em></div>
                 <div class="feature-check"><i class="is-checked">✓</i><span><b>Основание проживания</b><small>проверено</small></span><em>готово</em></div>
@@ -397,7 +397,7 @@
             </article>
             <article class="feature-card feature-card--status" data-reveal data-reveal-delay="180">
               <div class="feature-card__copy"><span class="feature-index">03 / статус</span><h3>Понятно, что происходит</h3><p>Фиксируем текущий этап и вопрос, который нужно решить следующим.</p></div>
-              <div class="status-preview"><span class="status-preview__ring">02</span><span><b>Документы</b><small>проверяем основание</small></span><i>↗</i></div>
+              <div class="status-preview"><span class="status-preview__ring">02</span><span><b>Документы</b><small>проверяем основание</small></span><i aria-hidden="true">↗</i></div>
             </article>
             <article class="feature-card feature-card--cost" data-reveal data-reveal-delay="260">
               <div class="feature-card__copy"><span class="feature-index">04 / условия</span><h3>Стоимость после проверки</h3><p>Не показываем «от 0 ₽»: точный расчёт зависит от сценария, документов и объёма сопровождения.</p></div>
@@ -417,7 +417,7 @@
               <div><span>01</span><b>Тип регистрации</b><small>временная или постоянная</small></div>
               <div><span>02</span><b>Состав ситуации</b><small>один человек, семья, сотрудник</small></div>
               <div><span>03</span><b>Документы и сроки</b><small>что уже есть и что нужно проверить</small></div>
-              <a class="button button--primary" href="#lead-form">Получить ориентир после проверки <span>↗</span></a>
+              <a class="button button--primary" href="#lead-form">Получить ориентир после проверки <span aria-hidden="true">↗</span></a>
             </div>
           </div>
         </section>
@@ -425,7 +425,7 @@
         <aside class="foreign-note content-width" id="foreign-info" data-reveal>
           <div class="foreign-note__mark">i</div>
           <div><p class="mini-label">Отдельный маршрут</p><h2>Если вы — иностранный гражданин</h2><p>Миграционный учёт и правила пребывания не равны регистрации граждан РФ. Напишите отдельно, чтобы не смешивать разные требования; актуальные официальные правила проверяйте на <a href="https://dgp99.mos.ru/mobilnoe-prilozhenie-amina/" target="_blank" rel="noreferrer">mos.ru</a>.</p></div>
-          <a class="text-link" href="#lead-form" data-form-intent="foreign">Уточнить маршрут <span>↗</span></a>
+          <a class="text-link" href="#lead-form" data-form-intent="foreign">Уточнить маршрут <span aria-hidden="true">↗</span></a>
         </aside>
 
         <section class="section section--faq" id="faq" aria-labelledby="faq-title">
@@ -472,7 +472,7 @@
               <p class="section-lead">Оставьте контакт и пару деталей. Ответим в выбранном канале и обозначим, что нужно проверить дальше.</p>
               <div class="direct-contact">
                 <p>Предпочитаете сразу в мессенджер?</p>
-                <div><a href="https://t.me/garunsuleymanov" target="_blank" rel="noreferrer">Telegram <span>↗</span></a><a href="https://wa.me/79898945850" target="_blank" rel="noreferrer">WhatsApp <span>↗</span></a></div>
+                <div><a href="https://t.me/garunsuleymanov" target="_blank" rel="noreferrer">Telegram <span aria-hidden="true">↗</span></a><a href="https://wa.me/79898945850" target="_blank" rel="noreferrer">WhatsApp <span aria-hidden="true">↗</span></a></div>
               </div>
             </div>
             <div class="lead-card" data-reveal data-reveal-delay="120">
@@ -481,11 +481,11 @@
                 <input type="hidden" id="registrationTypeInput" name="registration_type" value="Временная регистрация" />
                 <div class="honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>
                 <div class="form-heading"><span>Короткая форма</span><small>ответим в мессенджере</small></div>
-                <label class="field"><span>Как к вам обращаться <small>необязательно</small></span><input id="name" name="name" type="text" autocomplete="name" placeholder="Имя" /></label>
-                <label class="field"><span>Куда ответить? <b>*</b></span><input id="contact" name="contact" type="text" autocomplete="email" placeholder="Telegram, WhatsApp или телефон" required /></label>
-                <label class="field"><span>Что нужно решить? <small>необязательно</small></span><textarea id="request" name="request" rows="4" placeholder="Например: живу в Москве по договору аренды и хочу понять, какой вариант регистрации нужен"></textarea></label>
-                <label class="consent-field"><input id="consent" name="consent" type="checkbox" required /><span>Согласен(на) на обработку данных для ответа по обращению.</span></label>
-                <button class="button button--primary button--submit" id="submitButton" type="submit">Отправить обращение <span>↗</span></button>
+                <label class="field"><span>Как к вам обращаться <small>необязательно</small></span><input id="name" name="name" type="text" autocomplete="name" placeholder="Имя…" /></label>
+                <label class="field"><span>Куда ответить? <b>*</b></span><input id="contact" name="contact" type="text" autocomplete="off" spellcheck="false" aria-describedby="formStatus" placeholder="Telegram, WhatsApp или телефон…" required /></label>
+                <label class="field"><span>Что нужно решить? <small>необязательно</small></span><textarea id="request" name="request" autocomplete="off" rows="4" placeholder="Например: живу в Москве по договору аренды и хочу понять, какой вариант регистрации нужен…"></textarea></label>
+                <label class="consent-field"><input id="consent" name="consent" type="checkbox" aria-describedby="formStatus" required /><span>Согласен(на) на обработку данных для ответа по обращению.</span></label>
+                <button class="button button--primary button--submit" id="submitButton" type="submit">Отправить обращение <span aria-hidden="true">↗</span></button>
                 <p class="form-note">Не отправляйте паспортные данные и другую чувствительную информацию в этой форме.</p>
                 <p class="form-status" id="formStatus" role="status" aria-live="polite" hidden></p>
               </form>
@@ -504,9 +504,9 @@
         <div class="site-footer__bottom content-width"><p>Данные из формы нужны только для ответа на обращение и не должны содержать паспортные сведения.</p><a href="#privacy-note">Информация об обработке данных</a><span>© <span id="currentYear">2026</span> МосРегГид</span></div>
       </footer>
 
-      <div class="mobile-cta" aria-label="Быстрый контакт">
-        <a href="https://t.me/garunsuleymanov" target="_blank" rel="noreferrer"><span>↗</span> Telegram</a>
-        <a href="#lead-form"><span>→</span> Форма</a>
+      <div class="mobile-cta" role="group" aria-label="Быстрый контакт">
+        <a href="https://t.me/garunsuleymanov" target="_blank" rel="noreferrer"><span aria-hidden="true">↗</span> Telegram</a>
+        <a href="#lead-form"><span aria-hidden="true">→</span> Форма</a>
       </div>
     </div>
 

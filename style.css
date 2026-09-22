@@ -2514,6 +2514,10 @@ html.js-ready [data-reveal-delay="260"] {
     padding: 72px 0;
   }
 
+  main {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+
   .hero {
     width: calc(100vw - 36px);
     padding-top: 62px;
@@ -2765,7 +2769,7 @@ html.js-ready [data-reveal-delay="260"] {
   }
 
   .site-footer {
-    padding-bottom: 92px;
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
   }
 
   .site-footer__main,
@@ -2791,7 +2795,7 @@ html.js-ready [data-reveal-delay="260"] {
     position: fixed;
     z-index: 30;
     right: 10px;
-    bottom: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
     left: 10px;
     display: grid;
     grid-template-columns: 1fr 1fr;

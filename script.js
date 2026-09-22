@@ -7,6 +7,7 @@
   const state = {
     scenario: "self",
     registrationType: "temporary",
+    formScenario: "Для себя / аренда",
   };
 
   const scenarioLabels = {
@@ -32,6 +33,7 @@
     if (!scenarioLabels[scenario]) return;
 
     state.scenario = scenario;
+    state.formScenario = scenarioLabels[scenario];
 
     scenarioTabs.forEach((tab) => {
       const isSelected = tab.dataset.scenario === scenario;
@@ -96,7 +98,8 @@
   });
 
   function setForeignIntent() {
-    if (scenarioInput) scenarioInput.value = "Иностранный гражданин / отдельный маршрут";
+    state.formScenario = "Иностранный гражданин / отдельный маршрут";
+    if (scenarioInput) scenarioInput.value = state.formScenario;
   }
 
   document.querySelectorAll("[data-form-intent]").forEach((link) => {
@@ -153,11 +156,15 @@
   const siteHeader = document.querySelector(".site-header");
   const primaryNavigation = document.querySelector("#primary-navigation");
 
-  function closeMenu() {
+  function closeMenu({ restoreFocus = false } = {}) {
     if (!menuToggle || !siteHeader) return;
+    const wasOpen = siteHeader.classList.contains("nav-open");
     siteHeader.classList.remove("nav-open");
     menuToggle.setAttribute("aria-expanded", "false");
     menuToggle.setAttribute("aria-label", "Открыть меню");
+    if (restoreFocus && wasOpen) {
+      window.setTimeout(() => menuToggle.focus(), 0);
+    }
   }
 
   menuToggle?.addEventListener("click", () => {
@@ -167,10 +174,12 @@
     if (isOpen) primaryNavigation?.querySelector("a")?.focus();
   });
 
-  primaryNavigation?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+  primaryNavigation?.querySelectorAll("a").forEach((link) =>
+    link.addEventListener("click", () => closeMenu({ restoreFocus: true })),
+  );
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenu();
+    if (event.key === "Escape") closeMenu({ restoreFocus: true });
   });
 
   const revealItems = [...document.querySelectorAll("[data-reveal]")];
@@ -276,11 +285,13 @@
       });
 
       const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.error || "Не удалось отправить обращение");
+      if (!response.ok) throw new Error(result.error || result.message || "Не удалось отправить обращение");
 
       setFormStatus("Сообщение отправлено. Вернёмся с ответом после проверки обращения.");
+      const submittedScenario = state.formScenario;
       leadForm.reset();
       setScenario(state.scenario);
+      if (scenarioInput) scenarioInput.value = submittedScenario;
       setRegistrationType(state.registrationType);
       formStatus?.focus();
     } catch (error) {
@@ -288,7 +299,7 @@
       console.error("Lead form submission failed", error instanceof Error ? error.message : error);
     } finally {
       submitButton.disabled = false;
-      submitButton.innerHTML = 'Отправить обращение <span>↗</span>';
+      submitButton.innerHTML = 'Отправить обращение <span aria-hidden="true">↗</span>';
       leadForm.removeAttribute("aria-busy");
     }
   });
