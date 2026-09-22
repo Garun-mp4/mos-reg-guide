@@ -8,6 +8,7 @@
     scenario: "self",
     registrationType: "temporary",
     formScenario: "Для себя / аренда",
+    responseChannel: "telegram",
   };
 
   const scenarioLabels = {
@@ -28,12 +29,45 @@
   const leadForm = document.querySelector("#leadForm");
   const formStatus = document.querySelector("#formStatus");
   const submitButton = document.querySelector("#submitButton");
+  const contactInput = document.querySelector("#contact");
+  const contactError = document.querySelector("#contactError");
+  const consentInput = document.querySelector("#consent");
+  const consentError = document.querySelector("#consentError");
+  const contactHint = document.querySelector("#contactHint");
+  const channelHint = document.querySelector("#channelHint");
+  const responseChannelInputs = [...document.querySelectorAll('input[name="response_channel"]')];
+  const responseChannelData = {
+    telegram: {
+      label: "Telegram",
+      placeholder: "@username в Telegram…",
+      inputMode: "text",
+      type: "text",
+      autocomplete: "off",
+      hint: "Укажите @username или номер, привязанный к Telegram.",
+    },
+    whatsapp: {
+      label: "WhatsApp",
+      placeholder: "+7 999 123-45-67…",
+      inputMode: "tel",
+      type: "tel",
+      autocomplete: "tel",
+      hint: "Укажите номер, на который можно написать в WhatsApp.",
+    },
+    phone: {
+      label: "Телефон",
+      placeholder: "+7 999 123-45-67…",
+      inputMode: "tel",
+      type: "tel",
+      autocomplete: "tel",
+      hint: "Укажите номер, по которому можно позвонить.",
+    },
+  };
 
-  function setScenario(scenario, { focus = false } = {}) {
+  function setScenario(scenario, { focus = false, updateFormScenario = true } = {}) {
     if (!scenarioLabels[scenario]) return;
 
     state.scenario = scenario;
-    state.formScenario = scenarioLabels[scenario];
+    if (updateFormScenario) state.formScenario = scenarioLabels[scenario];
 
     scenarioTabs.forEach((tab) => {
       const isSelected = tab.dataset.scenario === scenario;
@@ -49,7 +83,7 @@
       panel.classList.toggle("is-active", isActive);
     });
 
-    if (scenarioInput) scenarioInput.value = scenarioLabels[scenario];
+    if (scenarioInput && updateFormScenario) scenarioInput.value = state.formScenario;
   }
 
   scenarioTabs.forEach((tab, index) => {
@@ -86,14 +120,39 @@
       const isSelected = control.dataset.regType === type;
       control.closest(".type-card")?.classList.toggle("is-selected", isSelected);
       control.setAttribute("aria-pressed", String(isSelected));
+      const label = control.querySelector(".card-link__label");
+      if (label) label.textContent = isSelected ? "Обсудить этот вариант" : "Выбрать для разговора";
     });
   }
+
+  function setResponseChannel(channel) {
+    const selected = responseChannelData[channel] ? channel : "telegram";
+    const details = responseChannelData[selected];
+    state.responseChannel = selected;
+
+    responseChannelInputs.forEach((input) => {
+      input.checked = input.value === selected;
+    });
+
+    if (contactInput) {
+      contactInput.placeholder = details.placeholder;
+      contactInput.inputMode = details.inputMode;
+      contactInput.type = details.type;
+      contactInput.autocomplete = details.autocomplete;
+    }
+    if (contactHint) contactHint.textContent = details.hint;
+    if (channelHint) channelHint.textContent = `Канал ответа: ${details.label}.`;
+  }
+
+  responseChannelInputs.forEach((input) => {
+    input.addEventListener("change", () => setResponseChannel(input.value));
+  });
 
   document.querySelectorAll("[data-reg-type]").forEach((control) => {
     control.addEventListener("click", () => {
       setRegistrationType(control.dataset.regType);
       document.querySelector("#lead-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.setTimeout(() => document.querySelector("#contact")?.focus(), 500);
+      window.requestAnimationFrame(() => contactInput?.focus({ preventScroll: true }));
     });
   });
 
@@ -174,9 +233,13 @@
     if (isOpen) primaryNavigation?.querySelector("a")?.focus();
   });
 
-  primaryNavigation?.querySelectorAll("a").forEach((link) =>
-    link.addEventListener("click", () => closeMenu({ restoreFocus: true })),
-  );
+  primaryNavigation?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      const target = link.hash ? document.querySelector(link.hash) : null;
+      closeMenu({ restoreFocus: !target });
+      if (target) window.requestAnimationFrame(() => target.focus({ preventScroll: true }));
+    });
+  });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeMenu({ restoreFocus: true });
@@ -216,19 +279,20 @@
   function validateForm() {
     if (!leadForm) return false;
 
-    const contact = leadForm.querySelector("#contact");
-    const consent = leadForm.querySelector("#consent");
-    const hasContact = Boolean(contact?.value.trim());
-    const hasConsent = Boolean(consent?.checked);
+    const hasContact = Boolean(contactInput?.value.trim());
+    const hasConsent = Boolean(consentInput?.checked);
+    const hasResponseChannel = Boolean(responseChannelData[state.responseChannel]);
 
-    markInvalid(contact, !hasContact);
-    if (contact && !hasContact) contact.focus();
+    markInvalid(contactInput, !hasContact);
+    markInvalid(consentInput, !hasConsent);
+    if (contactError) contactError.hidden = hasContact;
+    if (consentError) consentError.hidden = hasConsent;
 
-    if (!hasConsent && contact && hasContact) consent?.focus();
-    if (consent) consent.setAttribute("aria-invalid", String(!hasConsent));
+    if (!hasContact) contactInput?.focus();
+    else if (!hasConsent) consentInput?.focus();
 
-    if (!hasContact || !hasConsent) {
-      setFormStatus("Укажите контакт и подтвердите согласие — тогда мы сможем ответить.", "error");
+    if (!hasContact || !hasConsent || !hasResponseChannel) {
+      setFormStatus("Проверьте контакт и согласие, чтобы отправить обращение.", "error");
       return false;
     }
 
@@ -246,23 +310,33 @@
     const request = clean(formData.get("request"), 1200) || "не указано";
     const scenario = clean(formData.get("scenario"), 120);
     const registrationType = clean(formData.get("registration_type"), 120);
+    const responseChannel = responseChannelData[state.responseChannel]?.label || "не указан";
 
     return [
       "Новая заявка — МосРегГид",
       `Сценарий: ${scenario}`,
       `Тип регистрации: ${registrationType}`,
+      `Канал ответа: ${responseChannel}`,
       `Имя: ${name}`,
       `Контакт: ${contact}`,
       `Задача: ${request}`,
     ].join("\n");
   }
 
-  leadForm?.querySelectorAll("input, textarea").forEach((field) => {
-    field.addEventListener("input", () => {
-      if (field.matches("#contact") && field.value.trim()) markInvalid(field, false);
-      if (field.matches("#consent") && field.checked) markInvalid(field, false);
-      if (formStatus && !formStatus.hidden) formStatus.hidden = true;
-    });
+  leadForm?.addEventListener("input", (event) => {
+    if (event.target === contactInput && contactInput.value.trim()) {
+      markInvalid(contactInput, false);
+      if (contactError) contactError.hidden = true;
+    }
+    if (formStatus && !formStatus.hidden) formStatus.hidden = true;
+  });
+
+  consentInput?.addEventListener("change", () => {
+    if (consentInput.checked) {
+      markInvalid(consentInput, false);
+      if (consentError) consentError.hidden = true;
+    }
+    if (formStatus && !formStatus.hidden) formStatus.hidden = true;
   });
 
   leadForm?.addEventListener("submit", async (event) => {
@@ -290,9 +364,10 @@
       setFormStatus("Сообщение отправлено. Вернёмся с ответом после проверки обращения.");
       const submittedScenario = state.formScenario;
       leadForm.reset();
-      setScenario(state.scenario);
+      setScenario(state.scenario, { updateFormScenario: false });
       if (scenarioInput) scenarioInput.value = submittedScenario;
       setRegistrationType(state.registrationType);
+      setResponseChannel("telegram");
       formStatus?.focus();
     } catch (error) {
       setFormStatus("Не удалось отправить форму. Напишите напрямую в Telegram или WhatsApp — ссылки есть рядом.", "error");
@@ -310,5 +385,6 @@
   if (formStatus) formStatus.tabIndex = -1;
   setScenario(state.scenario);
   setRegistrationType(state.registrationType);
+  setResponseChannel(state.responseChannel);
   setWorkflowStep(1);
 })();
