@@ -174,7 +174,7 @@
   });
 
   const revealItems = [...document.querySelectorAll("[data-reveal]")];
-  document.querySelector(".hero-visual[data-reveal]")?.classList.add("is-visible");
+  document.querySelector(".hero-route[data-reveal]")?.classList.add("is-visible");
   if ("IntersectionObserver" in window) {
     const revealObserver = new IntersectionObserver(
       (entries, observer) => {

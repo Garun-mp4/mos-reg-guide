@@ -14,7 +14,6 @@
       property="og:description"
       content="Сопровождение оформления регистрации в Москве и Московской области через понятный маршрут."
     />
-    <meta property="og:image" content="assets/media/mos-reg-guide-hero-v2.webp" />
     <title>МосРегГид — сопровождение регистрации в Москве и МО</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css" />
@@ -83,41 +82,29 @@
             </p>
           </div>
 
-          <div class="hero-visual" data-reveal data-reveal-delay="120">
-            <div class="hero-visual__glow" aria-hidden="true"></div>
-            <div class="dashboard-frame">
-              <div class="dashboard-frame__topbar" aria-hidden="true">
-                <span class="window-dots"><i></i><i></i><i></i></span>
-                <span class="window-address">mos-reg-guide / сопровождение</span>
-                <span class="window-signal"></span>
+          <div class="hero-route" data-reveal data-reveal-delay="120" aria-label="Понятный маршрут обращения">
+            <div class="hero-route__head">
+              <span class="hero-route__label">МОСРЕГГИД / МАРШРУТ ОБРАЩЕНИЯ</span>
+              <span class="hero-route__status"><i aria-hidden="true"></i> начинаем с ситуации</span>
+            </div>
+            <div class="hero-route__steps" role="list">
+              <div class="hero-route__step hero-route__step--active" role="listitem">
+                <span class="hero-route__number">01</span>
+                <span><b>Опишите задачу</b><small>адрес, срок и цель</small></span>
               </div>
-              <picture>
-                <source
-                  media="(max-width: 560px)"
-                  srcset="assets/media/mos-reg-guide-hero-mobile.webp"
-                  type="image/webp"
-                />
-                <source srcset="assets/media/mos-reg-guide-hero-v2.webp" type="image/webp" />
-                <img
-                  src="assets/media/mos-reg-guide-hero-v2.png"
-                  alt="Пример маршрута регистрации: проверка ситуации, документы, текущий этап и следующий шаг"
-                  width="1672"
-                  height="941"
-                  fetchpriority="high"
-                />
-              </picture>
-              <div class="dashboard-caption">
-                <span class="status-dot"></span>
-                <span>Маршрут обращения собирается после проверки ситуации</span>
+              <div class="hero-route__step" role="listitem">
+                <span class="hero-route__number">02</span>
+                <span><b>Проверим документы</b><small>основание и условия</small></span>
+              </div>
+              <div class="hero-route__step" role="listitem">
+                <span class="hero-route__number">03</span>
+                <span><b>Обозначим следующий шаг</b><small>без лишних обещаний</small></span>
               </div>
             </div>
-            <div class="hero-float hero-float--status" aria-label="Статус проверки">
-              <span class="hero-float__icon">✓</span>
-              <span><b>Проверяем</b><small>основание и документы</small></span>
-            </div>
-            <div class="hero-float hero-float--message" aria-label="Связь с консультантом">
-              <span class="hero-float__icon">↗</span>
-              <span><b>В мессенджере</b><small>можно задать вопрос</small></span>
+            <div class="hero-route__foot">
+              <span class="hero-route__foot-line" aria-hidden="true"></span>
+              <span>Понятный маршрут появляется после короткой проверки ситуации.</span>
+              <span aria-hidden="true">↗</span>
             </div>
           </div>
         </section>
