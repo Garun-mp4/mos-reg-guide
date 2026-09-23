@@ -6,7 +6,7 @@
 
   const state = {
     scenario: "self",
-    registrationType: "temporary",
+    registrationType: "",
     formScenario: "Для себя / аренда",
     responseChannel: "telegram",
   };
@@ -21,6 +21,7 @@
     temporary: "Временная регистрация",
     permanent: "Постоянная регистрация",
   };
+  const foreignScenarioLabel = "Иностранный гражданин / отдельный маршрут";
 
   const scenarioTabs = [...document.querySelectorAll('[role="tab"][data-scenario]')];
   const scenarioPanels = [...document.querySelectorAll("[data-scenario-panel]")];
@@ -66,6 +67,7 @@
   function setScenario(scenario, { focus = false, updateFormScenario = true } = {}) {
     if (!scenarioLabels[scenario]) return;
 
+    const wasForeignScenario = state.formScenario === foreignScenarioLabel;
     state.scenario = scenario;
     if (updateFormScenario) state.formScenario = scenarioLabels[scenario];
 
@@ -84,6 +86,9 @@
     });
 
     if (scenarioInput && updateFormScenario) scenarioInput.value = state.formScenario;
+    if (registrationTypeInput && wasForeignScenario && updateFormScenario) {
+      registrationTypeInput.value = registrationLabels[state.registrationType] || "Не выбрано";
+    }
   }
 
   scenarioTabs.forEach((tab, index) => {
@@ -111,17 +116,25 @@
   });
 
   function setRegistrationType(type) {
-    if (!registrationLabels[type]) return;
+    if (type && !registrationLabels[type]) return;
 
     state.registrationType = type;
-    if (registrationTypeInput) registrationTypeInput.value = registrationLabels[type];
+    if (registrationTypeInput) registrationTypeInput.value = registrationLabels[type] || "Не выбрано";
+
+    if (state.formScenario === foreignScenarioLabel) {
+      state.formScenario = scenarioLabels[state.scenario];
+      if (scenarioInput) scenarioInput.value = state.formScenario;
+    }
 
     document.querySelectorAll("[data-reg-type]").forEach((control) => {
-      const isSelected = control.dataset.regType === type;
+      const isSelected = Boolean(type) && control.dataset.regType === type;
+      const wording = control.dataset.regType === "temporary"
+        ? { selected: "Выбрана временная", choose: "Выбрать временную" }
+        : { selected: "Выбрана постоянная", choose: "Выбрать постоянную" };
       control.closest(".type-card")?.classList.toggle("is-selected", isSelected);
       control.setAttribute("aria-pressed", String(isSelected));
       const label = control.querySelector(".card-link__label");
-      if (label) label.textContent = isSelected ? "Обсудить этот вариант" : "Выбрать для разговора";
+      if (label) label.textContent = isSelected ? wording.selected : wording.choose;
     });
   }
 
@@ -157,8 +170,10 @@
   });
 
   function setForeignIntent() {
-    state.formScenario = "Иностранный гражданин / отдельный маршрут";
+    setRegistrationType("");
+    state.formScenario = foreignScenarioLabel;
     if (scenarioInput) scenarioInput.value = state.formScenario;
+    if (registrationTypeInput) registrationTypeInput.value = "Миграционный учёт / отдельный маршрут";
   }
 
   document.querySelectorAll("[data-form-intent]").forEach((link) => {
@@ -178,10 +193,10 @@
   const workflowLabel = document.querySelector("[data-workflow-label]");
   const workflowStatus = document.querySelector("[data-workflow-status]");
   const workflowData = {
-    1: { label: "Собираем задачу", status: "в работе" },
-    2: { label: "Проверяем документы", status: "нужны данные" },
-    3: { label: "Подбираем маршрут", status: "сверяем" },
-    4: { label: "Сопровождаем оформление", status: "на связи" },
+    1: { label: "Уточняем задачу", status: "исходные данные" },
+    2: { label: "Проверяем основание", status: "условия" },
+    3: { label: "Объясняем маршрут", status: "согласование" },
+    4: { label: "Сопровождаем оформление", status: "по договорённости" },
   };
 
   function setWorkflowStep(step) {
@@ -366,7 +381,7 @@
       leadForm.reset();
       setScenario(state.scenario, { updateFormScenario: false });
       if (scenarioInput) scenarioInput.value = submittedScenario;
-      setRegistrationType(state.registrationType);
+      setRegistrationType("");
       setResponseChannel("telegram");
       formStatus?.focus();
     } catch (error) {
